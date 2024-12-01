@@ -1,0 +1,22 @@
+{
+  "name": "server.js",
+  "version": "1.0.0",
+  "description": "routine management system",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Sibanijana/FINAL-YEAR-PROJECT.git"
+  },
+  "author": "sibanijana, pratulmakar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sibanijana/FINAL-YEAR-PROJECT/issues"
+  },
+  "homepage": "https://github.com/Sibanijana/FINAL-YEAR-PROJECT#readme",
+  "dependencies": {
+    "server.js": "file:"
+  }
+}
