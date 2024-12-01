@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Sibanijana/FINAL-YEAR-PROJECT#readme",
   "dependencies": {
+    "express": "^4.21.1",
     "server.js": "file:"
   }
 }
