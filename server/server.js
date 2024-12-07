@@ -2,6 +2,7 @@ import express, { json } from "express";
 import { connect } from "mongoose";
 import { config } from "dotenv";
 import cors from "cors";
+import authRoutes from "./routes/auth.routes.js";
 
 // Import routes
 // import userRoutes from "./routes/userRoutes";
@@ -27,7 +28,7 @@ connect(MONGO_URI)
 // Routes
 // app.use("/api/users", userRoutes); // User authentication and management routes
 // app.use("/api/routine", routineRoutes); // Routine management routes
-
+app.use("/api/auth", authRoutes);
 // Root route
 app.get("/", (req, res) => {
   res.send("Welcome to the College Routine Management System API");
