@@ -1,8 +1,10 @@
+import pkg from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
-import { sign } from "jsonwebtoken";
-import { hash, compare } from "bcryptjs";
 
-// Register a new user
+const { hash, compare } = pkg;
+const { sign } = jwt;
+
 // Register a new user
 export async function registerUser(req, res) {
   try {

@@ -28,3 +28,6 @@ export async function requireDepartmentAccess(req, res, next) {
 
   next();
 }
+
+export const roleMiddleware = requireRole;
+export const departmentMiddleware = requireDepartmentAccess;

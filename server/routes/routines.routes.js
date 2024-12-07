@@ -5,23 +5,23 @@ import {
   updateRoutine,
   deleteRoutine,
 } from "../controllers/routine.controller.js";
-import authMiddleware from "../middlewares/auth.middlewares.js";
-import roleMiddleware from "../middlewares/role.middlewares.js";
+import { verifyToken } from "../middlewares/auth.middlewares.js";
+import { roleMiddleware } from "../middlewares/role.middlewares.js";
 
 const router = express.Router();
 
 // Routes
-router.post("/", authMiddleware, roleMiddleware("MasterAdmin"), createRoutine); // Create routine
-router.get("/", authMiddleware, getRoutines); // Get routines (optional filters)
+router.post("/", verifyToken, roleMiddleware("MasterAdmin"), createRoutine); // Create routine
+router.get("/", verifyToken, getRoutines); // Get routines (optional filters)
 router.patch(
   "/:id",
-  authMiddleware,
+  verifyToken,
   roleMiddleware(["MasterAdmin", "HOD"]),
   updateRoutine
 ); // Update routine
 router.delete(
   "/:id",
-  authMiddleware,
+  verifyToken,
   roleMiddleware("MasterAdmin"),
   deleteRoutine
 ); // Delete routine

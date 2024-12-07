@@ -1,5 +1,6 @@
-import { verify } from "jsonwebtoken";
+import pkg from "jsonwebtoken";
 
+const { verify } = pkg;
 export async function verifyToken(req, res, next) {
   const authHeader = req.header("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
