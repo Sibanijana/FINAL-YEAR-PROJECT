@@ -3,49 +3,43 @@ import { sign } from "jsonwebtoken";
 import { hash, compare } from "bcryptjs";
 
 // Register a new user
+// Register a new user
 export async function registerUser(req, res) {
   try {
     const { username, password, role, department } = req.body;
 
-    // Only MasterAdmin can register users
+    // Ensure that the MasterAdmin role is only set if no other MasterAdmin exists
+    if (role === "MasterAdmin") {
+      const existingMasterAdmin = await User.findOne({ role: "MasterAdmin" });
+      if (existingMasterAdmin) {
+        return res
+          .status(403)
+          .json({ message: "MasterAdmin already exists. Cannot create more." });
+      }
+    }
+
     if (req.user.role !== "MasterAdmin") {
-      return res.status(403).json({
-        message: "Access denied. Only MasterAdmin can register users.",
-      });
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    // Ensure department is set only for non-MasterAdmin users
-    if (role !== "MasterAdmin" && !department) {
-      return res
-        .status(400)
-        .json({ message: "Department is required for non-MasterAdmin users." });
-    }
-
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ message: "Username already exists." });
+      return res.status(400).json({ message: "Username already exists" });
     }
 
-    // Hash password before saving
     const hashedPassword = await hash(password, 10);
 
-    // Create new user
     const newUser = new User({
       username,
       password: hashedPassword,
       role,
-      department: role !== "MasterAdmin" ? department : undefined, // Only set department for non-MasterAdmin
+      department,
     });
-
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully." });
+    res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).json({
-      message: "Server error during registration.",
-      error: err.message,
-    });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 }
 

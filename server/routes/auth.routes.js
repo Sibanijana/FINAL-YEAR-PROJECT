@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser } from "../controllers/auth.controller";
+import { registerUser, loginUser } from "../controllers/auth.controller.js";
 import { verifyToken } from "../middlewares/auth.middlewares.js";
 import { requireRole } from "../middlewares/role.middlewares.js";
 
