@@ -5,6 +5,8 @@ import cors from "cors";
 import authRoutes from "./routes/auth.routes.js";
 import routineRoutes from "./routes/routines.routes.js";
 import errorHandler from "./middlewares/error.handler.middlewares.js";
+import pkg from "bcryptjs";
+//const { hash } = pkg;
 
 // Import routes
 // import userRoutes from "./routes/userRoutes";
