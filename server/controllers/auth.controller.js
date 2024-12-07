@@ -11,7 +11,7 @@ export async function registerUser(req, res) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const existingUser = await findOne({ username });
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: "Username already exists" });
     }
@@ -37,7 +37,7 @@ export async function loginUser(req, res) {
   try {
     const { username, password } = req.body;
 
-    const user = await findOne({ username });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
