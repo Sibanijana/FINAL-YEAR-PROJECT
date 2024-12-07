@@ -11,8 +11,13 @@ import { roleMiddleware } from "../middlewares/role.middlewares.js";
 const router = express.Router();
 
 // Routes
-router.post("/", verifyToken, roleMiddleware("MasterAdmin"), createRoutine); // Create routine
-router.get("/", verifyToken, getRoutines); // Get routines (optional filters)
+router.post(
+  "/create-routines",
+  verifyToken,
+  roleMiddleware(["MasterAdmin", "HOD"]),
+  createRoutine
+); // Create routine
+router.get("/get-routines", verifyToken, getRoutines); // Get routines (optional filters)
 router.patch(
   "/:id",
   verifyToken,
