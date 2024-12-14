@@ -131,7 +131,7 @@ const LoginPage = () => {
         <img
           src="./assets/login.jpg"
           alt="Login illustration"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover rounded-md"
         />
       </div>
     </section>
