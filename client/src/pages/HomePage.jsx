@@ -2,28 +2,40 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (
-    <div className="text-center">
-      <h1 className="text-3xl font-bold mb-4">
-        Welcome to Routine Management System
-      </h1>
-      <p className="text-lg mb-6">
-        Manage department routines effectively with ease.
-      </p>
-      <div className="space-x-4">
-        <Link
-          to="/login"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Login
-        </Link>
-        <Link
-          to="/admin"
-          className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-        >
-          Admin Dashboard
-        </Link>
+    <section className="bg-gray-50 bg-[url('./assets/bg.png')] bg-cover bg-center">
+      <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
+        <div className="mx-auto max-w-xl text-center">
+          <h1 className="text-3xl font-extrabold sm:text-5xl">
+            Understand User Flow.
+            <strong className="font-extrabold text-teal-600 sm:block">
+              {" "}
+              Increase Conversion.{" "}
+            </strong>
+          </h1>
+
+          <p className="mt-4 sm:text-xl/relaxed">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
+            illo tenetur fuga ducimus numquam ea!
+          </p>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              className="block w-full rounded bg-teal-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-teal-700 focus:outline-none focus:ring active:bg-teal-600 sm:w-auto"
+              to="/login"
+            >
+              Get Started
+            </Link>
+
+            <Link
+              className="block w-full rounded px-12 py-3 text-sm font-medium text-teal-600 shadow hover:text-teal-800 focus:outline-none focus:ring active:text-teal-600 sm:w-auto"
+              to="/about"
+            >
+              Learn More
+            </Link>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
