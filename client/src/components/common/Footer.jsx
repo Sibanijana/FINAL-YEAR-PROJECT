@@ -15,7 +15,7 @@ const Footer = () => {
 
           <Link
             to="/login"
-            className="mt-8 inline-block rounded-full border border-indigo-600 px-12 py-3 text-sm font-medium text-indigo-600 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring active:bg-indigo-500"
+            className="mt-8 inline-block rounded-full border border-teal-600 px-12 py-3 text-sm font-medium text-teal-600 hover:bg-teal-600 hover:text-white focus:outline-none focus:ring active:bg-teal-600"
           >
             Get Started
           </Link>
