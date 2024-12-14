@@ -13,9 +13,14 @@ const HomePage = () => {
             </strong>
           </h1>
 
-          <p className="mt-4 sm:text-xl/relaxed">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
-            illo tenetur fuga ducimus numquam ea!
+          <p className="mt-4 sm:text-xl">
+            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-5xl">
+              Customize Your Routine
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-sm text-gray-500">
+              A new way to manage your all tasks hassle free.✅
+            </p>
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
