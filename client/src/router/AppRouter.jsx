@@ -1,21 +1,22 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "../components/common/Layout";
-import LoginPage from "../components/Auth/LoginPage";
 import AdminPage from "../pages/AdminPage";
-import DepartmentPage from "../pages/DepartmentPage";
+//import DepartmentPage from "../pages/DepartmentPage";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../components/auth/LoginPage";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route
+          {/* <Route
             path="/department/:department_name"
             element={<DepartmentPage />}
-          />
+          /> */}
         </Routes>
       </Layout>
     </BrowserRouter>
