@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-lg font-bold">Routine Management</h1>
+        <h1 className="text-lg font-bold">SJ Routine Services</h1>
         <ul className="flex space-x-4">
           <li>
             <Link to="/" className="hover:text-gray-200">
