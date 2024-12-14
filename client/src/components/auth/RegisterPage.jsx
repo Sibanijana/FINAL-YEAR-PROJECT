@@ -77,7 +77,7 @@ const RegisterPage = () => {
                       name="option"
                     />
 
-                    <span className="text-sm"> Option 1 </span>
+                    <span className="text-sm">CSE</span>
                   </label>
                 </div>
 
@@ -95,7 +95,7 @@ const RegisterPage = () => {
                       name="option"
                     />
 
-                    <span className="text-sm"> Option 2 </span>
+                    <span className="text-sm">ECE</span>
                   </label>
                 </div>
 
@@ -113,7 +113,58 @@ const RegisterPage = () => {
                       name="option"
                     />
 
-                    <span className="text-sm"> Option 3 </span>
+                    <span className="text-sm">EE</span>
+                  </label>
+                </div>
+                <div>
+                  <label
+                    htmlFor="Option3"
+                    className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
+                    tabIndex="0"
+                  >
+                    <input
+                      className="sr-only"
+                      id="Option3"
+                      type="radio"
+                      tabIndex="-1"
+                      name="option"
+                    />
+
+                    <span className="text-sm">ME</span>
+                  </label>
+                </div>
+                <div>
+                  <label
+                    htmlFor="Option3"
+                    className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
+                    tabIndex="0"
+                  >
+                    <input
+                      className="sr-only"
+                      id="Option3"
+                      type="radio"
+                      tabIndex="-1"
+                      name="option"
+                    />
+
+                    <span className="text-sm">CE</span>
+                  </label>
+                </div>
+                <div>
+                  <label
+                    htmlFor="Option3"
+                    className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
+                    tabIndex="0"
+                  >
+                    <input
+                      className="sr-only"
+                      id="Option3"
+                      type="radio"
+                      tabIndex="-1"
+                      name="option"
+                    />
+
+                    <span className="text-sm">CSBS</span>
                   </label>
                 </div>
               </div>
@@ -136,7 +187,7 @@ const RegisterPage = () => {
                   type="submit"
                   className="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"
                 >
-                  Send Enquiry
+                  Submit
                 </button>
               </div>
             </form>
