@@ -118,13 +118,13 @@ const RegisterPage = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="Option3"
+                    htmlFor="Option4"
                     className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
                     tabIndex="0"
                   >
                     <input
                       className="sr-only"
-                      id="Option3"
+                      id="Option4"
                       type="radio"
                       tabIndex="-1"
                       name="option"
@@ -135,13 +135,13 @@ const RegisterPage = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="Option3"
+                    htmlFor="Option5"
                     className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
                     tabIndex="0"
                   >
                     <input
                       className="sr-only"
-                      id="Option3"
+                      id="Option5"
                       type="radio"
                       tabIndex="-1"
                       name="option"
@@ -152,13 +152,13 @@ const RegisterPage = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="Option3"
+                    htmlFor="Option6"
                     className="block w-full cursor-pointer rounded-lg border border-gray-200 p-3 text-gray-600 hover:border-black has-[:checked]:border-black has-[:checked]:bg-black has-[:checked]:text-white"
                     tabIndex="0"
                   >
                     <input
                       className="sr-only"
-                      id="Option3"
+                      id="Option6"
                       type="radio"
                       tabIndex="-1"
                       name="option"
@@ -175,11 +175,11 @@ const RegisterPage = () => {
                 </label>
 
                 <textarea
-                  className="w-full rounded-lg border-gray-200 p-3 text-sm"
+                  className="w-full rounded-lg border border-gray-300 p-3 text-sm"
                   placeholder="Message"
                   rows="8"
                   id="message"
-                ></textarea>
+                />
               </div>
 
               <div className="mt-4">
