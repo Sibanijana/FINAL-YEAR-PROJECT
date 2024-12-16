@@ -32,10 +32,10 @@ const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:block">
             <nav aria-label="Global">
-              <ul className="flex items-center gap-6 text-sm">
+              <ul className="flex items-center gap-6 text-md font-medium ">
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90 "
                     to="/about"
                   >
                     About
@@ -43,7 +43,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90 "
                     to="/careers"
                   >
                     Careers
@@ -51,7 +51,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90  "
                     to="/"
                   >
                     History
@@ -59,7 +59,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90 "
                     to="/services"
                   >
                     Services
@@ -67,7 +67,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90 "
                     to="#"
                   >
                     Projects
@@ -75,12 +75,26 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link
-                    className="text-gray-500 transition hover:text-gray-500/75"
+                    className="text-gray-500 transition hover:text-teal-900/90 "
                     to="#"
                   >
                     Blog
                   </Link>
                 </li>
+                <div className="ml-[200px] space-x-6">
+                  <Link
+                    className="rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white shadow hover:bg-teal-700"
+                    to="/login"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    className="rounded-md bg-slate-100 px-5 py-2.5 text-sm font-medium text-teal-600 hover:bg-teal-200/25 hover:outline hover:outline-1"
+                    to="/register"
+                  >
+                    Register
+                  </Link>
+                </div>
               </ul>
             </nav>
           </div>
