@@ -243,7 +243,7 @@ const Navbar = () => {
       {/* Mobile Bottom Navigation Bar (visible on mobile only) */}
       <div className="block md:hidden">
         <motion.nav
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 mobile-tab-bar py-2"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 mobile-tab-bar"
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           transition={{
