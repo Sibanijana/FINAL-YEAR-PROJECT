@@ -1,11 +1,14 @@
 import express, { json } from "express";
 import { connect } from "mongoose";
 import { config } from "dotenv";
+import helmet from "helmet";
 import cors from "cors";
+import xss from "xss";
+import hpp from "hpp";
 import authRoutes from "./routes/auth.routes.js";
 import routineRoutes from "./routes/routines.routes.js";
 import errorHandler from "./middlewares/error.handler.middlewares.js";
-import pkg from "bcryptjs";
+
 //const { hash } = pkg;
 
 // Import routes
@@ -16,10 +19,74 @@ import pkg from "bcryptjs";
 config();
 
 const app = express();
-
+const xssFilter = new xss.FilterXSS({
+  whiteList: {},
+  stripIgnoreTag: true,
+  stripIgnoreTagBody: ["script"],
+});
 // Middleware
 app.use(json()); // Parses incoming JSON requests
-app.use(cors()); // Enables cross-origin requests
+app.use(helmet());
+
+// Enable CORS
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || true,
+    credentials: true,
+  })
+); /// Enables cross-origin requests
+
+// Prevent XSS attacks
+app.use((req, res, next) => {
+  // Sanitize request body
+  if (req.body) {
+    Object.keys(req.body).forEach((key) => {
+      if (typeof req.body[key] === "string") {
+        req.body[key] = xssFilter.process(req.body[key]);
+      }
+    });
+  }
+
+  // Sanitize query parameters
+  if (req.query) {
+    Object.keys(req.query).forEach((key) => {
+      if (typeof req.query[key] === "string") {
+        req.query[key] = xssFilter.process(req.query[key]);
+      }
+    });
+  }
+
+  // Sanitize route parameters
+  if (req.params) {
+    Object.keys(req.params).forEach((key) => {
+      if (typeof req.params[key] === "string") {
+        req.params[key] = xssFilter.process(req.params[key]);
+      }
+    });
+  }
+
+  next();
+});
+
+// Prevent HTTP Parameter Pollution
+app.use(hpp());
+
+// Content Security Policy
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  })
+);
 
 // MongoDB connection
 const PORT = process.env.PORT || 8080;

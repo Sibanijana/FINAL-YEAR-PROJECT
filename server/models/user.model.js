@@ -7,6 +7,27 @@ const UserSchema = new Schema(
     username: {
       type: String,
       required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address"],
+    },
+    collegeId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      match: [/^\d{10}$/, "Please enter a valid college ID"],
+    },
+    mobileNo: {
+      type: String,
+      required: true,
+      match: [/^\d{10}$/, "Please enter a valid mobile number"],
       unique: true,
       trim: true,
     },
@@ -16,7 +37,7 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["MasterAdmin", "HOD", "AssistantTeacher"],
+      enum: ["MasterAdmin", "HOD", "AssistantTeacher", "Student"],
       required: true,
     },
     department: {
@@ -26,6 +47,18 @@ const UserSchema = new Schema(
         return this.role !== "MasterAdmin";
       },
     },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+        expiresAt: {
+          type: Date,
+          required: true,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
