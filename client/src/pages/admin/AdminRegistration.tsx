@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/pages/admin/Register.tsx
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import {
   Eye,
@@ -10,10 +11,11 @@ import {
   User,
   PhoneCall,
   IdCard,
+  Shield,
   HomeIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { registerStudent } from "../services/auth.service";
+import { adminRegistration } from "../../services/auth.service";
 import {
   Select,
   SelectContent,
@@ -22,23 +24,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const Register = () => {
+const AdminRegistration = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobileNo: "",
-    role: "",
+    role: "", // Default to MasterAdmin
     collegeId: "",
+    department: "",
     password: "",
     confirmPassword: "",
-    department: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -50,7 +54,6 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Validation
     if (!Object.values(formData).every((field) => field.trim())) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -63,24 +66,25 @@ const Register = () => {
       return;
     }
 
-    const toastId = toast.loading("Creating your account...");
+    const toastId = toast.loading("Creating admin account...");
 
     try {
-      await registerStudent({
+      await adminRegistration({
         username: formData.name,
         email: formData.email,
         mobileNo: formData.mobileNo,
         collegeId: formData.collegeId,
         password: formData.password,
+        role: formData.role,
         department: formData.department,
       });
 
       toast.dismiss(toastId);
-      toast.success("Account created successfully!");
-      navigate("/login");
-    } catch (error) {
+      toast.success("Admin account created successfully!");
+      navigate("/admin/dashboard");
+    } catch (error: any) {
       toast.dismiss(toastId);
-      toast.error(error?.message);
+      toast.error(error.message || "Registration failed");
     } finally {
       setIsLoading(false);
     }
@@ -88,9 +92,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-
-      <div className="container mx-auto px-4 pt-24 pb-12 -mt-10 md:mt-0">
+      <div className="container mx-auto px-4 py-12">
         <motion.div
           className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
@@ -98,15 +100,15 @@ const Register = () => {
           transition={{ duration: 0.5 }}
         >
           <div className="p-6">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-            >
-              <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-                Create Your Account
+            <div className="text-center mb-6">
+              <Shield className="mx-auto h-12 w-12 text-teal-600" />
+              <h2 className="mt-2 text-2xl font-bold text-gray-800">
+                Admin Registration
               </h2>
-            </motion.div>
+              <p className="mt-1 text-sm text-gray-600">
+                Register a new admin account
+              </p>
+            </div>
 
             <motion.form
               onSubmit={handleSubmit}
@@ -119,7 +121,7 @@ const Register = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="name"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Full Name
                 </label>
@@ -143,7 +145,7 @@ const Register = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Email
                 </label>
@@ -157,7 +159,7 @@ const Register = () => {
                     value={formData.email}
                     onChange={handleChange}
                     className="block w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                    placeholder="your@email.com"
+                    placeholder="admin@college.edu"
                     required
                   />
                 </div>
@@ -167,7 +169,7 @@ const Register = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="mobileNo"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Mobile Number
                 </label>
@@ -191,7 +193,7 @@ const Register = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="collegeId"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   College ID
                 </label>
@@ -205,11 +207,12 @@ const Register = () => {
                     value={formData.collegeId}
                     onChange={handleChange}
                     className="block w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
-                    placeholder="28100121008"
+                    placeholder="ADM001"
                     required
                   />
                 </div>
               </div>
+
               {/* Department Field */}
               <div className="space-y-2">
                 <label
@@ -244,11 +247,32 @@ const Register = () => {
                 </Select>
               </div>
 
+              {/* Role Field */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="role"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
+                <select
+                  id="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                  required
+                >
+                  <option value="MasterAdmin">Master Admin</option>
+                  <option value="DepartmentAdmin">Department Admin</option>
+                  <option value="FacultyAdmin">Faculty Admin</option>
+                </select>
+              </div>
+
               {/* Password Field */}
               <div className="space-y-2">
                 <label
                   htmlFor="password"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Password
                 </label>
@@ -279,7 +303,7 @@ const Register = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="confirmPassword"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="block text-sm font-medium text-gray-700"
                 >
                   Confirm Password
                 </label>
@@ -310,33 +334,6 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Terms Checkbox */}
-              <div className="flex items-center text-sm">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  className="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
-                  required
-                />
-                <label htmlFor="terms" className="ml-2 block text-gray-700">
-                  I agree to the{" "}
-                  <Link
-                    to="#"
-                    className="text-teal-600 hover:text-teal-700 font-medium"
-                  >
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    to="#"
-                    className="text-teal-600 hover:text-teal-700 font-medium"
-                  >
-                    Privacy Policy
-                  </Link>
-                </label>
-              </div>
-
-              {/* Submit Button */}
               <motion.button
                 type="submit"
                 className="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-medium shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-50"
@@ -344,26 +341,11 @@ const Register = () => {
                 whileTap={{ scale: 0.98 }}
                 disabled={isLoading}
               >
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isLoading
+                  ? "Creating Admin Account..."
+                  : "Create Admin Account"}
               </motion.button>
             </motion.form>
-
-            <motion.div
-              className="mt-6 text-center text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              <p className="text-gray-600">
-                Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="text-teal-600 hover:text-teal-700 font-medium"
-                >
-                  Login
-                </Link>
-              </p>
-            </motion.div>
           </div>
         </motion.div>
       </div>
@@ -371,4 +353,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default AdminRegistration;

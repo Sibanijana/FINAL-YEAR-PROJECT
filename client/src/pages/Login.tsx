@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Basic validation
     if (!email || !password) {
@@ -23,11 +28,11 @@ const Login = () => {
           border: "1px solid #c62828",
         },
       });
+      setIsLoading(false);
       return;
     }
 
-    // Show success toast (replace with actual login logic)
-    const toastId = toast.loading("Processing your request...", {
+    const toastId = toast.loading("Logging in...", {
       style: {
         backgroundColor: "#fff3e0",
         color: "#ef6c00",
@@ -35,22 +40,69 @@ const Login = () => {
       },
     });
 
-    // Simulate an async operation (e.g., API call)
-    setTimeout(() => {
-      // Dismiss the loading toast
+    try {
+      // Replace this with your actual API call
+      const response = await fakeLoginApi(email, password);
+
+      // Dismiss loading toast
       toast.dismiss(toastId);
 
-      // Show a success toast
-      toast.success("Request completed!", {
-        description: "Success",
+      // Login successful - set user role and redirect
+      login(response.role);
+
+      toast.success("Login successful!", {
+        description: `Welcome ${response.role}`,
         style: {
           backgroundColor: "#e8f5e9",
           color: "#2e7d32",
           border: "1px solid #2e7d32",
         },
       });
-    }, 3000);
-    console.log("Login attempt:", { email, password });
+    } catch (error) {
+      toast.dismiss(toastId);
+      setIsLoading(false);
+
+      toast.error("Login failed", {
+        description:
+          error instanceof Error ? error.message : "Invalid credentials",
+        style: {
+          backgroundColor: "#ffebee",
+          color: "#c62828",
+          border: "1px solid #c62828",
+        },
+      });
+    }
+  };
+
+  // Mock API function - replace with your actual login API call
+  const fakeLoginApi = (
+    email: string,
+    password: string
+  ): Promise<{
+    role: "MasterAdmin" | "HOD" | "AssistantTeacher" | "Student";
+  }> => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        // This is just for demonstration - replace with real authentication
+        const testAccounts: Record<string, { password: string; role: any }> = {
+          "admin@school.com": { password: "admin123", role: "MasterAdmin" },
+          "hod@school.com": { password: "hod123", role: "HOD" },
+          "teacher@school.com": {
+            password: "teacher123",
+            role: "AssistantTeacher",
+          },
+          "student@school.com": { password: "student123", role: "Student" },
+        };
+
+        const account = testAccounts[email];
+
+        if (account && account.password === password) {
+          resolve({ role: account.role });
+        } else {
+          reject(new Error("Invalid email or password"));
+        }
+      }, 1500);
+    });
   };
 
   return (
@@ -150,7 +202,7 @@ const Login = () => {
                   </label>
                 </div>
                 <Link
-                  to="#"
+                  to="/forgot-password"
                   className="text-teal-600 hover:text-teal-700 font-medium"
                 >
                   Forgot password?
@@ -159,11 +211,12 @@ const Login = () => {
 
               <motion.button
                 type="submit"
-                className="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-medium shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-300"
+                className="w-full bg-teal-600 text-white py-2 px-4 rounded-md font-medium shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? "Signing in..." : "Sign in"}
               </motion.button>
             </motion.form>
 
