@@ -22,7 +22,10 @@ const UserSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
-      match: [/^\d{10}$/, "Please enter a valid college ID"],
+      match: [
+        /^281\d{8}$/,
+        "Please enter a valid college ID (11 digits starting with 281)",
+      ],
     },
     mobileNo: {
       type: String,
@@ -33,6 +36,26 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
+      required: true,
+    },
+    departmentId: {
+      type: String,
+      enum: ["cse", "ece", "ee", "me", "ce", "csbs"],
+      required: true,
+    },
+    group: {
+      type: String,
+      enum: ["A", "B", "C", "D"],
+      required() {
+        return this.role === "Student";
+      },
+    },
+    semester: {
+      type: String,
+      enum: ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"],
+      required() {
+        return this.role === "Student";
+      },
       required: true,
     },
     role: {

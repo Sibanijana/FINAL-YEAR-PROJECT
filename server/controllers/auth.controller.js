@@ -23,7 +23,12 @@ export async function registerUser(req, res) {
         .json({ message: "Password must be at least 8 characters" });
     }
 
-    // MasterAdmin validation
+    // Authorization check - must be MasterAdmin to register users
+    if (!req.user || req.user.role !== "MasterAdmin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    // MasterAdmin validation - only one MasterAdmin can exist
     if (role === "MasterAdmin") {
       const existingMasterAdmin = await User.findOne({ role: "MasterAdmin" });
       if (existingMasterAdmin) {
@@ -31,11 +36,6 @@ export async function registerUser(req, res) {
           message: "MasterAdmin already exists. Cannot create more.",
         });
       }
-    }
-
-    // Authorization check
-    if (req.user.role !== "MasterAdmin") {
-      return res.status(403).json({ message: "Access denied" });
     }
 
     // Check for existing user
@@ -84,17 +84,17 @@ export async function registerUser(req, res) {
 // Enhanced login with token storage
 export async function loginUser(req, res) {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     // Basic validation
-    if (!username || !password) {
+    if (!email || !password) {
       return res
         .status(400)
-        .json({ message: "Username and password are required" });
+        .json({ message: "email and password are required" });
     }
 
     // Find user
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -136,12 +136,13 @@ export async function loginUser(req, res) {
     res.status(200).json({
       message: "Login successful",
       token,
-      role: user.role,
-      department: user.department,
+
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
+        department: user.department,
       },
     });
   } catch (err) {
@@ -185,8 +186,17 @@ export async function logoutUser(req, res) {
 // Enhanced student registration
 export async function registerStudent(req, res) {
   try {
-    const { username, password, email, mobileNo, collegeId, department } =
-      req.body;
+    const {
+      username,
+      password,
+      email,
+      mobileNo,
+      collegeId,
+      department,
+      departmentId,
+      group,
+      semester,
+    } = req.body;
 
     // Validate input
     if (
@@ -195,7 +205,10 @@ export async function registerStudent(req, res) {
       !email ||
       !mobileNo ||
       !collegeId ||
-      !department
+      !department ||
+      !group ||
+      !semester ||
+      !departmentId
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -230,6 +243,11 @@ export async function registerStudent(req, res) {
       department,
       mobileNo,
       collegeId,
+      group,
+      semester,
+      departmentId: departmentId.toLowerCase(), // Assuming department is a string like "CSE"
+      group: group.toUpperCase(), // Ensure group is uppercase
+      semester: semester.toLowerCase(), // Ensure semester is lowercase
     });
 
     await newUser.save();
