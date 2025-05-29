@@ -13,7 +13,7 @@ import {
   HomeIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { registerStudent } from "../services/auth.service";
+import { authService } from "@/services/auth.service";
 import {
   Select,
   SelectContent,
@@ -66,7 +66,7 @@ const Register = () => {
     const toastId = toast.loading("Creating your account...");
 
     try {
-      await registerStudent({
+      await authService.registerStudent({
         username: formData.name,
         email: formData.email,
         mobileNo: formData.mobileNo,

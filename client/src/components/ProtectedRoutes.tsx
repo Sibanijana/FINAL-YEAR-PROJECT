@@ -1,5 +1,5 @@
 // src/components/ProtectedRoute.tsx
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/authStore";
 import { Navigate, Outlet } from "react-router";
 
 interface ProtectedRouteProps {
@@ -7,9 +7,13 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuthStore();
 
-  if (!user) {
+  if (isLoading) {
+    return <div>Loading...</div>; // Or your loading component
+  }
+
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 

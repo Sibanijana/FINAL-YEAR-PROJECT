@@ -4,21 +4,20 @@ import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
+import { useAuthStore } from "@/store/authStore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Basic validation
     if (!email || !password) {
       toast.error("Please fill in all fields", {
         description: "Error",
@@ -38,71 +37,53 @@ const Login = () => {
         color: "#ef6c00",
         border: "1px solid #ef6c00",
       },
+      duration: 300,
     });
 
     try {
-      // Replace this with your actual API call
-      const response = await fakeLoginApi(email, password);
-
-      // Dismiss loading toast
-      toast.dismiss(toastId);
-
-      // Login successful - set user role and redirect
-      login(response.role);
+      await login(email, password);
 
       toast.success("Login successful!", {
-        description: `Welcome ${response.role}`,
+        description: "Redirecting to dashboard...",
         style: {
           backgroundColor: "#e8f5e9",
           color: "#2e7d32",
           border: "1px solid #2e7d32",
         },
       });
+
+      // Redirect based on role
+      switch (user?.role) {
+        case "MasterAdmin":
+          navigate("/master-admin");
+          break;
+        case "HOD":
+        case "AssistantTeacher":
+          navigate("/staff");
+          break;
+        case "Student":
+          navigate("/student");
+          break;
+        default:
+          navigate("/");
+      }
     } catch (error) {
       toast.dismiss(toastId);
-      setIsLoading(false);
+
+      const errorMessage =
+        error instanceof Error ? error.message : "Invalid credentials";
 
       toast.error("Login failed", {
-        description:
-          error instanceof Error ? error.message : "Invalid credentials",
+        description: errorMessage,
         style: {
           backgroundColor: "#ffebee",
           color: "#c62828",
           border: "1px solid #c62828",
         },
       });
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  // Mock API function - replace with your actual login API call
-  const fakeLoginApi = (
-    email: string,
-    password: string
-  ): Promise<{
-    role: "MasterAdmin" | "HOD" | "AssistantTeacher" | "Student";
-  }> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // This is just for demonstration - replace with real authentication
-        const testAccounts: Record<string, { password: string; role: any }> = {
-          "admin@school.com": { password: "admin123", role: "MasterAdmin" },
-          "hod@school.com": { password: "hod123", role: "HOD" },
-          "teacher@school.com": {
-            password: "teacher123",
-            role: "AssistantTeacher",
-          },
-          "student@school.com": { password: "student123", role: "Student" },
-        };
-
-        const account = testAccounts[email];
-
-        if (account && account.password === password) {
-          resolve({ role: account.role });
-        } else {
-          reject(new Error("Invalid email or password"));
-        }
-      }, 1500);
-    });
   };
 
   return (
@@ -153,6 +134,7 @@ const Login = () => {
                     className="block w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
                     placeholder="your@email.com"
                     required
+                    autoComplete="username"
                   />
                 </div>
               </div>
@@ -176,11 +158,15 @@ const Login = () => {
                     className="block w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
                     placeholder="••••••••"
                     required
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -191,6 +177,7 @@ const Login = () => {
                 <div className="flex items-center">
                   <input
                     id="remember-me"
+                    name="remember-me"
                     type="checkbox"
                     className="h-4 w-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500"
                   />

@@ -15,7 +15,7 @@ import {
   HomeIcon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { adminRegistration } from "../../services/auth.service";
+import { authService } from "@/services/auth.service";
 import {
   Select,
   SelectContent,
@@ -25,11 +25,13 @@ import {
 } from "@/components/ui/select";
 
 const AdminRegistration = () => {
+  const UserRole: Role = "HOD"; // Default role for admin registration
+  type Role = "MasterAdmin" | "HOD" | "AssistantTeacher";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobileNo: "",
-    role: "", // Default to MasterAdmin
+    role: UserRole, // Default to HOD
     collegeId: "",
     department: "",
     password: "",
@@ -69,7 +71,7 @@ const AdminRegistration = () => {
     const toastId = toast.loading("Creating admin account...");
 
     try {
-      await adminRegistration({
+      await authService.adminRegistration({
         username: formData.name,
         email: formData.email,
         mobileNo: formData.mobileNo,
