@@ -1,60 +1,103 @@
+
+import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router";
-import { useEffect } from "react";
-import { useAuthStore } from "@/store/authStore";
-import { ProtectedRoute } from "@/components/ProtectedRoutes";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
-import AdminRegistration from "./pages/admin/AdminRegistration";
-import MasterAdminDashboard from "./pages/dashboard/MasterAdminDashBoard";
-import StaffDashboard from "./pages/dashboard/StaffDashboard";
-import StudentDashboard from "./pages/dashboard/StudentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import StaffDashboard from "./pages/StaffDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
 import Unauthorized from "./pages/Unauthorized";
+import NotFound from "./pages/NotFound";
 
-const App = () => {
-  // Initialize auth state
-  const initializeAuth = useAuthStore((state) => state.initialize);
+const queryClient = new QueryClient();
 
-  useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+const AppRoutes = () => {
+  const { isAuthenticated, user } = useAuthStore();
+
+  // Function to get default redirect based on user role
+  const getDefaultRedirect = () => {
+    if (!user) return '/admin';
+    
+    switch (user.role) {
+      case 'MasterAdmin':
+      case 'HOD':
+        return '/admin';
+      case 'AssistantTeacher':
+        return '/staff';
+      case 'Student':
+        return '/student';
+      default:
+        return '/admin';
+    }
+  };
 
   return (
-    <TooltipProvider>
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-
-          {/* Protected routes */}
-          <Route element={<ProtectedRoute allowedRoles={["MasterAdmin"]} />}>
-            <Route path="/master-admin/" element={<MasterAdminDashboard />} />
-          </Route>
-
-          <Route
-            element={
-              <ProtectedRoute allowedRoles={["HOD", "AssistantTeacher"]} />
-            }
-          >
-            <Route path="/staff/" element={<StaffDashboard />} />
-          </Route>
-
-          <Route element={<ProtectedRoute allowedRoles={["Student"]} />}>
-            <Route path="/student/" element={<StudentDashboard />} />
-          </Route>
-
-          <Route path="/admin/register" element={<AdminRegistration />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <Routes>
+      <Route 
+        path="/" 
+        element={
+          isAuthenticated ? 
+            <Navigate to={getDefaultRedirect()} replace /> : 
+            <Index />
+        } 
+      />
+      <Route 
+        path="/login" 
+        element={
+          !isAuthenticated ? 
+            <Login /> : 
+            <Navigate to={getDefaultRedirect()} replace />
+        } 
+      />
+      
+      <Route 
+        path="/admin" 
+        element={
+          <ProtectedRoute requiredRole="HOD">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      
+      <Route 
+        path="/staff" 
+        element={
+          <ProtectedRoute allowedRoles={["MasterAdmin", "HOD", "AssistantTeacher"]}>
+            <StaffDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      
+      <Route 
+        path="/student" 
+        element={
+          <ProtectedRoute allowedRoles={["MasterAdmin", "HOD", "AssistantTeacher", "Student"]}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      
+      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
